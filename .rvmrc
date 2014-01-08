@@ -1,0 +1,8 @@
+USER_RVMRC='.rvmrc.local'
+
+if [ -f $USER_RVMRC ]; then
+  source $USER_RVMRC
+else
+  rvm use 1.9.3@expresspigeon-ruby --create
+fi
+
