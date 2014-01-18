@@ -216,14 +216,12 @@ class Contacts
   # Delete single contact. If list_id is not provided, contact will be deleted from system.
   # :param email: contact email to be deleted.
   # :param list_id: list id to remove contact from, if not provided, contact will be deleted from system.
-  def delete(email, list_id)
-    query = "email=#{email}&list_id=#{list_id}"
-    del "#{@endpoint}?#{query}", nil
-  end
-
-  #TODO improve method name, once I learn Ruby :)
-  def delete_from_system(email)
-    query = "email=#{email}"
+  def delete(email, list_id = nil)
+    if list_id
+      query = "email=#{email}&list_id=#{list_id}"
+    else
+      query = "email=#{email}"
+    end
     del "#{@endpoint}?#{query}", nil
   end
 end

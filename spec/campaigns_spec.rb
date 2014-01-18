@@ -70,7 +70,7 @@ describe 'campaigns integration test' do
     unsubscribed.size.should eq 0
     spam.size.should eq 0
 
-    resp = PIGEON.contacts.delete_from_system(API_USER)
+    resp = PIGEON.contacts.delete(API_USER)
     validate_response resp, 200, 'success', /contact=non@non.non deleted successfully/
 
     resp = PIGEON.contacts.find_by_email(API_USER)
