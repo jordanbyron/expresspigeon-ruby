@@ -1,4 +1,4 @@
-require './lib/api'
+require './lib/expresspigeon-ruby'
 require 'pigeon_helper'
 
 describe 'contacts integration test' do
@@ -7,6 +7,10 @@ describe 'contacts integration test' do
 
   it 'test_create_and_delete_new_list(self):' do
     contact_list = PIGEON.lists.create 'Active customers', 'Bob', 'bob@acmetools.com'
+
+    puts "*****************************"
+    puts contact_list
+
     validate_response contact_list, 200, 'success', /list=#{contact_list.list.id} created\/updated successfully/
     contact_list.list.name.should eq "Active customers"
     contact_list.list.from_name.should eq "Bob"
@@ -42,25 +46,28 @@ describe 'contacts integration test' do
 
           list_name = "Upload_#{Kernel.rand(9999).to_s}"
           existing_list = PIGEON.lists.create(list_name, 'Bob', 'bob@acmetools.com')
-          res = PIGEON.lists.upload(existing_list.list.id, self.file_to_upload)
-          self.assertEqual(res.status, "success")
-          self.assertEqual(res.code, 200)
-          self.assertEquals(res.message, "file uploaded successfully")
-          self.assertTrue(res.upload_id is not None)
 
-          sleep(5)
+          #res = PIGEON.lists.upload(existing_list.list.id, self.file_to_upload)
 
-          res = self.api.lists.upload_status(res.upload_id)
-          self.assertEqual(res.message, "file upload completed")
-          self.assertEqual(res.status, "success")
-          self.assertEqual(res.code, 200)
-          report = res.report
-          self.assertTrue(report.completed)
-          self.assertFalse(report.failed)
-          self.assertEqual(report.suppressed, 0)
-          self.assertEqual(report.skipped, 0)
-          self.assertEqual(report.list_name, list_name)
-          self.assertEqual(report.imported, 2)
+
+          #self.assertEqual(res.status, "success")
+          #self.assertEqual(res.code, 200)
+          #self.assertEquals(res.message, "file uploaded successfully")
+          #self.assertTrue(res.upload_id is not None)
+          #
+          #sleep(5)
+          #
+          #res = self.api.lists.upload_status(res.upload_id)
+          #self.assertEqual(res.message, "file upload completed")
+          #self.assertEqual(res.status, "success")
+          #self.assertEqual(res.code, 200)
+          #report = res.report
+          #self.assertTrue(report.completed)
+          #self.assertFalse(report.failed)
+          #self.assertEqual(report.suppressed, 0)
+          #self.assertEqual(report.skipped, 0)
+          #self.assertEqual(report.list_name, list_name)
+          #self.assertEqual(report.imported, 2)
 
   #    def test_upsert_list_with_non_existent_id(self):
   #        res = self.api.lists.update(-1, {"name": "Updated Name", "from_name": "Bill"})

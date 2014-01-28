@@ -1,3 +1,5 @@
+require "expresspigeon-ruby/version"
+
 require 'net/http'
 require 'json'
 require 'uri'
@@ -5,11 +7,10 @@ require 'uri'
 AUTH_KEY = ENV['EXPRESSPIGEON_AUTH_KEY']
 ROOT = 'https://api.expresspigeon.com/'
 #ROOT = 'http://localhost:8888/api/'
-USE_SSL=true
+USE_SSL = true
 
 module ExpressPigeon
   module API
-
     unless AUTH_KEY
       raise 'Provide EXPRESSPIGEON_AUTH_KEY environment variable'
     end

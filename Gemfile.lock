@@ -1,8 +1,12 @@
-GEM
-  remote: http://rubygems.org/
+PATH
+  remote: .
   specs:
-    diff-lcs (1.2.4)
-    json (1.8.1)
+    expresspigeon-ruby (0.0.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    diff-lcs (1.2.5)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
@@ -16,5 +20,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  json (= 1.8.1)
-  rspec (= 2.14.1)
+  expresspigeon-ruby!
+  rspec (~> 2.6)

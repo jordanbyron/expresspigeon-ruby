@@ -1,4 +1,4 @@
-require './lib/api'
+require './lib/expresspigeon-ruby'
 require 'pigeon_helper'
 
 describe 'contacts integration test' do

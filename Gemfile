@@ -1,5 +1,5 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
-gem 'rspec', '2.14.1'
-gem 'json', '1.8.1'
+# Specify your gem's dependencies in expresspigeon-ruby.gemspec
+gemspec
 
