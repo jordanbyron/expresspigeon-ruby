@@ -3,9 +3,9 @@ require 'json'
 require 'uri'
 
 AUTH_KEY = ENV['EXPRESSPIGEON_AUTH_KEY']
-#ROOT = 'https://api.expresspigeon.com/'
-ROOT = 'http://localhost:8888/api/'
-USE_SSL=false
+ROOT = 'https://api.expresspigeon.com/'
+#ROOT = 'http://localhost:8888/api/'
+USE_SSL=true
 
 module ExpressPigeon
   module API
@@ -35,15 +35,13 @@ module ExpressPigeon
         resp = Net::HTTP.start(uri.host, uri.port, :use_ssl => USE_SSL) do |http|
           http.request req
         end
-        resp = JSON.parse(resp.body)
-        if resp.kind_of? Hash
-          MetaHash.new resp
+        parsed = JSON.parse(resp.body)
+        if parsed.kind_of? Hash
+          MetaHash.new parsed
         else
-          resp
+          parsed
         end
-
       end
-
     end
 
     def get(path, &block)
@@ -69,6 +67,10 @@ module ExpressPigeon
     def self.contacts
       Contacts.new
     end
+
+    def self.messages
+      Messages.new
+    end
   end
 
 end
@@ -78,8 +80,8 @@ class MetaHash < Hash
   def initialize(delegate)
     super
     @delegate = delegate
-    @delegate.each_key do | k |
-      v = @delegate[k]  # lets go only one level down for now
+    @delegate.each_key do |k|
+      v = @delegate[k] # lets go only one level down for now
       if v.kind_of? Hash
         @delegate[k] = MetaHash.new(v)
       end
@@ -89,6 +91,11 @@ class MetaHash < Hash
   def method_missing(m, *args, &block)
     @delegate[m.to_s]
   end
+
+  def to_s
+    @delegate.to_s
+  end
+
 end
 
 class Lists
@@ -109,6 +116,23 @@ class Lists
   def all
     get @endpoint
   end
+
+
+  #Updates existing list
+  #
+  #:param list_id: Id of list to be updated
+  #:type list_id: int
+  #
+  #:param params: JSON object represents a list to be updated
+
+  #
+  #:returns: EpResponse with status, code, message, and updated list
+  #:rtype: EpResponse
+  #TODO: resolve API on Python side, then implement this
+  #def update(list_id, params = {})
+  #    params['id'] = list_id
+  #    return self.ep.put(self.endpoint, params=params)
+  #end
 
 
   # Removes a list with a given id. A list must be enabled and has no dependent subscriptions and/or scheduled campaigns.
@@ -210,7 +234,7 @@ class Contacts
   # :returns: representation of a contact
   #
   def upsert(list_id, contact)
-    post @endpoint, params={:list_id => list_id, :contact => contact}
+    post @endpoint, params = {:list_id => list_id, :contact => contact}
   end
 
   # Delete single contact. If list_id is not provided, contact will be deleted from system.
@@ -224,4 +248,58 @@ class Contacts
     end
     del "#{@endpoint}?#{query}", nil
   end
+
+
+end
+class Messages
+
+  include ExpressPigeon::API
+
+  def initialize
+    @endpoint = 'messages'
+  end
+
+  def send_message(template_id, to, reply_to, from_name, subject, merge_fields = nil, view_online = false, click_tracking = true)
+    post @endpoint, params = {template_id: template_id, :to => to, reply_to: reply_to, :from => from_name, :subject => subject,
+                              :merge_fields => merge_fields, :view_online => view_online, :click_tracking => click_tracking}
+  end
+
+  def report(message_id)
+    get "#{@endpoint}/#{message_id}"
+  end
+
+  #
+  #
+  # start_date is instance of Time
+  # end_date is instance of Time
+  def reports(from_id, start_date = nil, end_date = nil)
+    params = []
+
+    if from_id
+      params << "from_id=#{from_id}"
+    end
+
+    if start_date and not end_date
+      raise 'must include both start_date and end_date'
+    end
+    if end_date and not start_date
+      raise 'must include both start_date and end_date'
+    end
+
+    if start_date and end_date
+      params << "start_date=#{start_date.strftime('%FT%T.%L%z')}"
+      params << "end_date=#{end_date.strftime('%FT%T.%L%z')}"
+    end
+
+    query = "#{@endpoint}?"
+
+    if params.size > 0
+      query << params.join('&')
+    end
+
+    puts "calling: #{query}"
+    get query
+
+  end
+
 end
