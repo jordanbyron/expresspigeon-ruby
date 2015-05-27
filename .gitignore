@@ -5,3 +5,5 @@
 
 rspec.sh
 set_env
+
+*.txt
