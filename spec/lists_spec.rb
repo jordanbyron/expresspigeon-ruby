@@ -3,10 +3,14 @@ require 'pigeon_helper'
 
 describe 'contacts integration test' do
 
+  LISTS = ExpressPigeon::API.lists #.auth_key('f5bfd636-6219-46f9-ae05-de1fc841b464')
+
+  ExpressPigeon::ROOT = 'https://api.expresspigeontest.com/'
+
   include PigeonSpecHelper
 
   it 'test_create_and_delete_new_list(self):' do
-    contact_list = PIGEON.lists.create 'Active customers', 'Bob', 'bob@acmetools.com'
+    contact_list = LISTS.create 'Active customers', 'Bob', 'bob@acmetools.com'
 
     puts "*****************************"
     puts contact_list
@@ -25,14 +29,18 @@ describe 'contacts integration test' do
     #contact_list.list.country.should eq "Belarus"
     #contact_list.list.organization.should eq "ExpressPigeon"
 
-    res = PIGEON.lists.delete(contact_list.list.id)
+    res = LISTS.delete(contact_list.list.id)
+
+    puts res
+
     validate_response res, 200, 'success', /list=#{contact_list.list.id} deleted successfully/
   end
 
   #TODO: implement Lists.update method
   it 'should update existing list' do
 
-    existing_list = PIGEON.lists.create("Update", "Bob", "bob@acmetools.com")
+    existing_list = LISTS.create("Update", "Bob", "bob@acmetools.com")
+    LISTS.delete(existing_list.list.id)
     #res = PIGEON.lists.update existing_list.list.id, :name => 'Updated Name', :from_name => 'Bill'
     #
     #validate_response res, 200, 'success', /list=#{res.list.id} created\/updated successfully/
@@ -45,7 +53,10 @@ describe 'contacts integration test' do
       it 'should upload contacts'
 
           list_name = "Upload_#{Kernel.rand(9999).to_s}"
-          existing_list = PIGEON.lists.create(list_name, 'Bob', 'bob@acmetools.com')
+          existing_list = LISTS.create(list_name, 'Bob', 'bob@acmetools.com')
+
+  puts existing_list
+          res = LISTS.delete(existing_list.list.id)
 
           #res = PIGEON.lists.upload(existing_list.list.id, self.file_to_upload)
 

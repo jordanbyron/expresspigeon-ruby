@@ -4,21 +4,34 @@ require 'net/http'
 require 'json'
 require 'uri'
 
-AUTH_KEY = ENV['EXPRESSPIGEON_AUTH_KEY']
-ROOT = 'https://api.expresspigeon.com/'
-#ROOT = 'http://localhost:8888/api/'
-USE_SSL = true
-
 module ExpressPigeon
+
+  AUTH_KEY = ENV['EXPRESSPIGEON_AUTH_KEY']
+  ROOT = 'https://api.expresspigeon.com/'
+  USE_SSL = true
+
   module API
-    unless AUTH_KEY
-      raise 'Provide EXPRESSPIGEON_AUTH_KEY environment variable'
+
+    # Override environment variable in code.
+    def auth_key(auth_key)
+      @auth_key = auth_key
+      self
+    end
+
+    def root(root)
+      @root = root
+      self
     end
 
     def http(path, method, params = {})
-      uri = URI.parse "#{ROOT}#{path}"
+      root = @root ? @root : ROOT
+      uri = URI.parse "#{root}#{path}"
       req = Net::HTTP.const_get("#{method}").new "#{ROOT}#{path}"
-      req['X-auth-key'] = AUTH_KEY
+      unless AUTH_KEY ||  @auth_key
+        raise("Must set either EXPRESSPIGEON_AUTH_KEY as environment variable, or ExpressPigeon::AUTH_KEY in code")
+      end
+
+      req['X-auth-key'] = AUTH_KEY ? AUTH_KEY : @auth_key
       if params
         req.body = params.to_json
         req['Content-type'] = 'application/json'
@@ -302,5 +315,4 @@ class Messages
     get query
 
   end
-
 end

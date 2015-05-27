@@ -32,7 +32,7 @@ describe 'transactional messages integration test' do
 
   #TODO: complete the spec
   it 'sends a single transactional message' do
-    message_response = PIGEON.messages.send_message 4905, ENV['TARGET_EMAIL'], ENV['TARGET_EMAIL'], "Team ExpressPigeon", "Hi there!",
+    message_response = PIGEON.messages.send_message 115, ENV['TARGET_EMAIL'], ENV['TARGET_EMAIL'], "Team ExpressPigeon", "Hi there!",
                                                     :first_name => "Igor"
     validate_response message_response, 200, 'success', /email queued/
     report = PIGEON.messages.report(message_response.id)

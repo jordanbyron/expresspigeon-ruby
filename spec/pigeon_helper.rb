@@ -1,4 +1,4 @@
-PIGEON ||= ExpressPigeon::API
+
 TEMPLATE_ID ||= 1
 LIST_ID ||= 12
 API_USER ||= "non@non.non"

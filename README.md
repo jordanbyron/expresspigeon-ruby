@@ -18,7 +18,26 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Sending a transactional message is easy: 
+
+
+```ruby
+MESSAGES = ExpressPigeon::API.messages.auth_key 'XXX'
+message_response = MESSAGES.send_message 115,                 # template ID
+                                         'to_john@doe.com',   # send to
+                                         'from_jane@doe.com', # reply to
+                                         "Jane Dow",          # senders name
+                                         'Hi there!',         # subject
+                                                              # hash with custom content to merge
+                                         content: "hello, there!"
+
+puts message_response
+
+# need to wait before message information is written to DB
+sleep 5  
+
+# get a report for a specific message
+puts MESSAGES.report message_response.id
 
 ## Contributing
 
