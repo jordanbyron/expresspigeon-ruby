@@ -38,6 +38,8 @@ sleep 5
 
 # get a report for a specific message
 puts MESSAGES.report message_response.id
+```
+
 
 ## Contributing
 
